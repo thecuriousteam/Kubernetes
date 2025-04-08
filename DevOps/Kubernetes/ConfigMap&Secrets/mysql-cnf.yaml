@@ -9,3 +9,4 @@ data:
   MYSQL_DATABASE: "IAP-Dev"
   MYSQL_USER: "DevUser"
   MYSQL_PASSWORD: "password@123"
+  MYSQL_MAX_CONNECTIONS: "100"

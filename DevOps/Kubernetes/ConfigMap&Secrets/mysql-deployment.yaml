@@ -30,3 +30,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: mysql-config
+          # Explicitly setting environment variable for command
+          env:
+            - name: MYSQL_MAX_CONNECTIONS
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config #name of configmap
+                  key: MYSQL_MAX_CONNECTIONS #key in configmap
