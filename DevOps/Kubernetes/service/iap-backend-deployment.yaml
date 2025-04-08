@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iap-backend
+  labels:
+    app: iap-backend
+
+# global specification
+spec:
+  replicas: 3
+
+  # strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  # selectgor
+  selector:
+    matchLabels:
+      app: iap-backend
+
+  # template
+  template:
+    metadata:
+      labels:
+        app: iap-backend
+
+    # pod Specification
+    spec:
+      containers:
+        - name: iap-backend-container
+          image: thecuriousteam/iap-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10

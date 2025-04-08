@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: apache-pod
+  labels:
+    app: apache2
+spec:
+  containers:
+    - name: apache-pod
+      image: httpd:latest
+      ports:
+        - containerPort: 80
+# pod creation -> kubectl apply -f apache-pod.yaml
+# check status -> kubectl get pods
+# describe pod -> kubectl describe po apache-pod
+# go inide the pod -> kubectl exec -it apache-pod -- /bin/bash
+# edit pod -> kubectl edit po apache-pod
+# expose the pod -> kubectl port-forward apache-pod 8080:80
+# check logs -> kubectl logs apache-pod
+# delete pod -> kubectl delete -f apache-pod.yaml
+

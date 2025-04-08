@@ -1,0 +1,48 @@
+# mysql deployment file
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels:
+    app: mysql
+# global specs
+spec:
+  replicas: 1
+
+  # select the deployment file to manage
+  selector:
+    matchLabels:
+      app: mysql
+
+  # strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
+  # template
+  template:
+    metadata:
+      labels:
+        app: mysql
+
+    # pod specs
+    spec:
+      # create volumes
+      volumes:
+        - name: mysql-pv-volume
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+      containers:
+        - name: mysql-container
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "hbcsiubdnikjnvckjnbjcvb"
+          # attach volumes mount path
+          volumeMounts:
+            - name: mysql-pv-volume
+              mountPath: /var/lib/mysql

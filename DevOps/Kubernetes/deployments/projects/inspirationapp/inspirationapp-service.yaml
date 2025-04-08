@@ -1,0 +1,15 @@
+# implenting loadbalancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: inspirationapp-service
+  labels:
+    app: inspirationapp-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: inspirationapp-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+  # externalTrafficPolicy: Local

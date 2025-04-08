@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emtdir-example
+  labels:
+    app: emtdir-example
+
+# global specification
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: emt-dir-example
+
+  template:
+    metadata:
+      name: iap-frontend
+
+      # selector and lables app should be matching
+      labels:
+        app: emt-dir-example
+
+    spec:
+      volumes:
+        - name: log-volume
+          emptyDir: {}
+
+      containers:
+        # iap-frontend container
+        - name: iap-frontend-container
+          image: thecuriousteam/iapfrontend:1.0
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          # now mount the volume (here we are mounting the path)
+          volumeMounts:
+            - name: log-volume
+              mountPath: /logs
+
+          # another container (busybox) to have common utilitis
+        - name: busybox-utility-log-reader
+          image: busybox
+          command: ["/bin/sh", "-c"]
+          args: ["touch /logs/app.log && tail -f /logs/app.log"]
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+
+          # volumeMounts
+          volumeMounts:
+            - name: log-volume
+              mountPath: /logs
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iap-service
+  labels:
+    app: iap-service
+spec:
+  type: NodePort
+
+  selector:
+    app: emt-dir-example
+
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30122

@@ -1,0 +1,99 @@
+# pvc yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iap-storage
+  labels:
+    app: iap-storage
+
+# global specification
+spec:
+  accessModes:
+    - ReadWriteOnce
+
+  # resources defination
+  resources:
+    requests:
+      storage: 1Gi
+
+  # storageclass
+  storageClassName: "standard"
+
+---
+# deployment file
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iap-frontend
+  labels:
+    app: iap-frontend
+
+# global specification
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: iap-frontend
+
+  template:
+    metadata:
+      name: iap-frontend
+      labels:
+        app: iap-frontend
+
+    spec:
+      # we need to use PVC here
+      volumes:
+        - name: logs-volume
+          persistentVolumeClaim:
+            claimName: iap-storage
+      containers:
+        - name: iap-frontend-container
+          image: thecuriousteam/iapfrontend:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+
+          # this is how we mount the volume
+          volumeMounts:
+            - name: logs-volume
+              mountPath: "/logs"
+
+        - name: iap-utilities
+          image: busybox
+          imagePullPolicy: Always
+
+          # command to create a file to write logs
+          command: ["/bin/sh", "-c"]
+          args: ["touch /logs/app.log && tail -f /logs/app.log"]
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+
+          # where to mount the file
+          volumeMounts:
+            - name: logs-volume
+              mountPath: "/logs"
+---
+# services yaml file
+apiVersion: v1
+kind: Service
+metadata:
+  name: iap-pvc-service
+  labels:
+    app: iap-pvc-service
+
+spec:
+  type: NodePort
+  selector:
+    app: iap-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30124

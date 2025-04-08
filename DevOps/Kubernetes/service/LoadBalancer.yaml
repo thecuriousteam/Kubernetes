@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: iap-backend-loadbalancer
+  labels:
+    app: iap-backend-loadbalancer
+
+spec:
+  type: LoadBalancer
+
+  selector:
+    app: iap-backend
+
+  ports:
+    - port: 5000
+      targetPort: 5000
+
+  externalTrafficPolicy: Local

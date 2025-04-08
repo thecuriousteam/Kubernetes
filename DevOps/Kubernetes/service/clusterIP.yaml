@@ -1,0 +1,14 @@
+# deployment with types of services
+apiVersion: v1
+kind: Service
+metadata:
+  name: iap-backend-clusterip
+  labels:
+    app: iap-backend-ClusterIP
+spec:
+  type: ClusterIP
+  selector:
+    app: iap-backend
+  ports:
+    - port: 5000
+      targetPort: 5000

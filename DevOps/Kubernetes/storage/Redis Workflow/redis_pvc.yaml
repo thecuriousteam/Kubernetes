@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+  labels:
+    app: redis-pvc
+spec:
+  # request for the resource
+  resources:
+    requests:
+      storage: 1Gi
+  # access mode
+  accessModes:
+    - ReadWriteOnce
+  # storage class name
+  storageClassName: local-storage

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inspirationapp-frontend
+  labels:
+    app: inspirationapp-frontend
+# global specification
+spec:
+  replicas: 3
+
+  # zero downtime deployment
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+  # selector
+  selector:
+    matchLabels:
+      app: inspirationapp-frontend
+
+  # pod template
+  template:
+    metadata:
+      labels:
+        app: inspirationapp-frontend
+
+    spec:
+      containers:
+        - name: inspirationapp-frontend-container
+          image: thecuriousteam/iapfrontend:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

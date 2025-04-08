@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iap-mysql-deployment
+  labels:
+    app: iap-mysql
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iap-mysql
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: iap-mysql
+    # pod specification
+    spec:
+      containers:
+        - name: iap-mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          # taking env variables from configmap
+          envFrom:
+            - configMapRef:
+                name: mysql-config

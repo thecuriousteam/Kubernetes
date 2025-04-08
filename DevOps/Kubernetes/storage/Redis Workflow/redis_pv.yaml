@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv
+  labels:
+    app: redis-pv
+spec:
+  # capacity for the redis
+  capacity:
+    storage: 1Gi
+  # access mode
+  accessModes:
+    - ReadWriteOnce
+  # host path
+  hostPath:
+    path: "/mnt/data/redis"
+  # reclaim policy
+  persistentVolumeReclaimPolicy: Retain
+  # storagClassName
+  storageClassName: local-storage

@@ -1,0 +1,11 @@
+# basic version
+apiVersion: v1
+kind: Service
+metadata:
+  name: value #frontend or backend or any other name that will get DNS Entry
+  labels:
+    app: value
+  spec:
+    type: #type of service (ClusterIP, NodePort, LoadBalancer, ExternalName)
+    selector: #select pod template lable(s) that services will apply to
+    ports: # defining target port and port for the service

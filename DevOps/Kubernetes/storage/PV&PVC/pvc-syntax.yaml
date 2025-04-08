@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: <pvc-name> # Name of your PVC
+  labels: # (Optional) Useful for selectors, monitoring, etc.
+    app: <app-name>
+spec:
+  accessModes: # Defines how the volume can be mounted
+    - ReadWriteOnce # Common options: ReadWriteOnce, ReadOnlyMany, ReadWriteMany
+  resources:
+    requests:
+      storage: <size> # Example: 1Gi, 5Gi, 500Mi
+  storageClassName: <class-name> # Name of the storage class (e.g., 'standard', 'gp2')

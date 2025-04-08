@@ -1,0 +1,16 @@
+# basic structure
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx-deploy
+spec: # global specification
+  selector: #selector is used to select the template to use
+  template: #template used to create a pod
+    spec: #specification of the po      containers:
+        - name: nginx
+          image: nginx:1.7.9
+          ports:
+            - containerPort: 80

@@ -1,0 +1,71 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iap-frontend
+  labels:
+    app: iap-frontend
+
+# global specification
+spec:
+  # replica sets
+  replicas: 3
+
+  # rolling strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+  # selector
+  selector:
+    matchLabels:
+      app: iap-frontend
+
+  template:
+    metadata:
+      labels:
+        app: iap-frontend
+
+    spec:
+      containers:
+        - name: iap-frontend-container
+          image: thecuriousteam/iapfrontend:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+
+          # resources
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          # probe
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+---
+# services
+apiVersion: v1
+kind: Service
+metadata:
+  name: iap-frontend-services
+spec:
+  selector:
+    app: iap-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP

@@ -1,0 +1,48 @@
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+  labels:
+    app: redis-pod
+
+# global specifications
+spec:
+  replicas: 1
+
+  # selector
+  selector:
+    matchLabels:
+      app: redis-pod
+  # strategy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  # template
+  template:
+    metadata:
+      labels:
+        app: redis-pod
+
+    # pod specifications
+    spec:
+      # volumes
+      volumes:
+        - name: redis-pv-storage
+          persistentVolumeClaim:
+            claimName: redis-pvc
+      containers:
+        - name: redis-container
+          image: redis:latest
+          ports:
+            - containerPort: 6379
+          env:
+            - name: REDIS_PASSWORD
+              value: "yourpassword"
+
+          # mount volumes
+          volumeMounts:
+            - name: redis-pv-storage
+              mountPath: /data

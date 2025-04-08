@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+
+# global spec
+spec:
+  replicas: 1
+
+  # selector
+  selector:
+    matchLabels:
+      app: mysql
+
+  # stragegy
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+
+  # template
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      # volumes mounting
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        - name: mysql-logs
+          persistentVolumeClaim:
+            claimName: mysql-logs-pvc
+
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: rootpass
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+            - name: mysql-logs
+              mountPath: /var/log/mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  selector:
+    app: mysql
+
+  ports:
+    - port: 3306
+      targetPort: 3306
