@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-replicaset
+  labels:
+    app: nginx-replicaset
+spec:
+  selector:
+    matchLabels:
+      app: nginx-pod #lables should be matching for which we are applying replicaset
+  replicas: 3
+  template:
+    # add the replication
+    metadata:
+      name: nginx-pod-2
+      labels:
+        app: nginx-pod
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:alpine
