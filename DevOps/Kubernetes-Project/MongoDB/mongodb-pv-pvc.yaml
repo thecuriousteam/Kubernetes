@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongodb-pv
+spec:
+  # in pv capacity will come first
+  capacity:
+    storage: 1Gi
+  accessModes: #<Should Match With PVC>
+    - ReadWriteOnce
+  storageClassName: local-storage #<Should Match With PVC>
+  hostPath:
+    path: "/data/mongo"
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc
+spec:
+  # in pvc resources will come at first
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes: #<Should Match With PVC>
+    - ReadWriteOnce
+  storageClassName: local-storage #<Should Match With PV>
