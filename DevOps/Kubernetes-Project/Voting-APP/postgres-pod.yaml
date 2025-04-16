@@ -1,0 +1,37 @@
+# result app pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres-pod
+  labels:
+    name: postgres-pod
+    app: demo-voting-app
+spec:
+  containers:
+    - name: postgres
+      image: postgres
+      ports:
+        - containerPort: 5432
+      env:
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "postgres"
+
+---
+# postgres internal service
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  labels:
+    name: postgres-service
+    app: demo-voting-app
+spec:
+  # type: ClusterIP
+  selector: #should be same as the lables of redis pod
+    name: postgres-pod
+    app: demo-voting-app
+  ports:
+    - port: 5432
+      targetPort: 5432

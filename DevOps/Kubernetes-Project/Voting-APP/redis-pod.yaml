@@ -1,0 +1,32 @@
+# result app pod
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis-pod
+  labels:
+    name: redis-pod
+    app: demo-voting-app
+spec:
+  containers:
+    - name: redis
+      image: redis
+      ports:
+        - containerPort: 6379
+
+---
+# redis internal service
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  labels:
+    name: redis-service
+    app: demo-voting-app
+spec:
+  # type: ClusterIP
+  selector: #should be same as the lables of redis pod
+    name: redis-pod
+    app: demo-voting-app
+  ports:
+    - port: 6379
+      targetPort: 6379
